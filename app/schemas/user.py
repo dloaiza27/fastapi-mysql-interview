@@ -1,0 +1,18 @@
+from pydantic import BaseModel, EmailStr
+from typing import Optional
+
+class UserCreate(BaseModel):
+    email: EmailStr
+    name: str
+
+class UserUpdate(BaseModel):
+    email: Optional[EmailStr] = None
+    name: Optional[str] = None
+
+class UserOut(BaseModel):
+    id: int
+    email: EmailStr
+    name: str
+
+    class Config:
+        orm_mode = True
