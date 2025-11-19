@@ -1,20 +1,17 @@
 from sqlalchemy import create_engine, text
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, declarative_base
 
-# Nota: El candidato debe parametrizar estas variables de entorno
+# Reto: Elimina la vulnerabilidad de seguridad en la conexión
 DATABASE_URL = "mysql+pymysql://root:root@db:3306/interview"
 
 engine = create_engine(DATABASE_URL, pool_pre_ping=True)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+Base = declarative_base()
 
 def test_db_connection():
-    """
-    Nota: Se espera que el candidato haga un SELECT real
-    para comprobar la conexión con la base de datos.
-    """
     try:
         with engine.connect() as conn:
             conn.execute(text("SELECT 1"))
         return True
-    except:
+    except Exception:
         return False

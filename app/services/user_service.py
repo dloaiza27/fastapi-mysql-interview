@@ -4,23 +4,7 @@ from app.core.database import SessionLocal
 
 def giant_function(action, user_id=None, user_create: UserCreate = None, user_update: UserUpdate = None):
     """
-    Función gigante que hace TODO mezclado:
-    - Crear usuario
-    - Listar todos los usuarios
-    - Actualizar un usuario
-    - Eliminar un usuario
-    - Validaciones básicas
-
-    Parámetros:
-    - action: str -> "create", "list", "update", "delete"
-    - user_id: int -> usado para update/delete
-    - user_create: UserCreate -> datos para crear
-    - user_update: UserUpdate -> datos para actualizar
-
-    El candidato debe refactorizarla:
-    - Separar responsabilidades
-    - Aplicar SRP
-    - Usar patrones de diseño adecuados
+    Reto: refactoriza esta función aplicando principios SOLID.
     """
     db = SessionLocal()
     result = None
@@ -34,9 +18,13 @@ def giant_function(action, user_id=None, user_create: UserCreate = None, user_up
         db.refresh(new_user)
         result = UserOut.from_orm(new_user)
 
-    elif action == "list":
-        users = db.query(User).all()
-        result = [UserOut.from_orm(u) for u in users]
+    elif action == "get":
+        if not user_id:
+            return {"error": "ID de usuario requerido"}
+        user = db.query(User).filter(User.id == user_id).first()
+        if not user:
+            return None
+        result = UserOut.from_orm(user)
 
     elif action == "update":
         if not user_id or not user_update:
