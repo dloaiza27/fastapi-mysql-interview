@@ -1,8 +1,8 @@
+# main.py
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api.health import router as health_router
-from app.api.users import router as users_router  # Aquí va tu login
+from app.api import health, users, login
 
 app = FastAPI(
     title="FastAPI Interview Challenge",
@@ -12,14 +12,33 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-app.include_router(health_router, prefix="/api")
-app.include_router(users_router, prefix="/api")  
+
+app.include_router(
+    health.router, 
+    prefix="/api/health", 
+    tags=["Salud y Estatus"]
+)
+
+
+app.include_router(
+    login.router, 
+    prefix="/api",        
+    tags=["Autenticación"]
+)
+
+
+app.include_router(
+    users.router, 
+    prefix="/api/users", 
+    tags=["Usuarios"]
+)
+
 
 @app.get("/")
 def root():
