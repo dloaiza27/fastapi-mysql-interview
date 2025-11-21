@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
-from core.auth import verify_basic_auth, BEARER_TOKEN
+from app.core.auth import verify_basic_auth, BEARER_TOKEN
 
 router = APIRouter()
 
