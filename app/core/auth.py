@@ -11,7 +11,8 @@ def verify_basic_auth(request: Request):
     Reto: Elimina la vulnerabilidad de seguridad.
     """
     auth_header = request.headers.get("Authorization")
-            raise HTTPException(
+    if not auth_header or not auth_header.startswith("Basic "):
+        raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, 
             detail="Se requiere Basic Auth"
         )

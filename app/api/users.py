@@ -33,6 +33,6 @@ def update_user(user_id: int, user_update: UserUpdate, auth=Depends(verify_beare
 @router.delete("/")
 def delete_user(user_id: int, auth=Depends(verify_bearer_token)):
     result = giant_function(action="delete", user_id=user_id)
-    if result and "error" in result::
+    if result and "error" in result:
         raise HTTPException(status_code=400, detail=result["error"])
     return result
