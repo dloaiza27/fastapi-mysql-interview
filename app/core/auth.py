@@ -1,5 +1,7 @@
 from fastapi import Request, HTTPException, status
 import os
+import base64
+
 
 BASIC_USER = "admin"
 BASIC_PASS = "1234"
@@ -9,7 +11,7 @@ BEARER_TOKEN = "supersecret"
 def verify_basic_auth(request: Request):
     """
     Reto: Elimina la vulnerabilidad de seguridad.
-    """
+    """    
     auth_header = request.headers.get("Authorization")
     if not auth_header or not auth_header.startswith("Basic "):
         raise HTTPException(
@@ -20,16 +22,19 @@ def verify_basic_auth(request: Request):
     try:
         encoded_credentials = auth_header.split(" ")[1]
         decoded_credentials = base64.b64decode(encoded_credentials).decode("utf-8")
-        username, password = decoded_credentials.split(":")
+        if ":" not in decoded_credentials:
+            raise ValueError("Invalid format")
+            
+        username, password = decoded_credentials.split(":", 1)
         
         if username == BASIC_USER and password == BASIC_PASS:
             return True
-    except Exception:
+    except Exception as e:
         pass
 
     raise HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED, 
-        detail="Invalid Credentials"
+        detail=f"Invalid Credentials"
     )
 
 
