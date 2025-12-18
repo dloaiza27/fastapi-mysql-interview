@@ -5,6 +5,6 @@ from app.main import app
 client = TestClient(app)
 
 def test_health_check():
-    response = client.get("/api/health", headers={"Authorization": "Bearer supersecret"})
+    response = client.get("/api/health/healthy")
     assert response.status_code == 200
     assert response.json()["status"] == "ok"

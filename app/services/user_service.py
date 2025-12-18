@@ -16,7 +16,7 @@ def giant_function(action, user_id=None, user_create: UserCreate = None, user_up
         db.add(new_user)
         db.commit()
         db.refresh(new_user)
-        result = UserOut.from_orm(new_user)
+        result = UserOut.model_validate(new_user)
 
     elif action == "get":
         if not user_id:
@@ -24,7 +24,7 @@ def giant_function(action, user_id=None, user_create: UserCreate = None, user_up
         user = db.query(User).filter(User.id == user_id).first()
         if not user:
             return None
-        result = UserOut.from_orm(user)
+        result = UserOut.model_validate(new_user)
 
     elif action == "update":
         if not user_id or not user_update:
@@ -37,7 +37,7 @@ def giant_function(action, user_id=None, user_create: UserCreate = None, user_up
         if user_update.name:
             user.name = user_update.name
         db.commit()
-        result = UserOut.from_orm(user)
+        result = UserOut.model_validate(new_user)
 
     elif action == "delete":
         if not user_id:

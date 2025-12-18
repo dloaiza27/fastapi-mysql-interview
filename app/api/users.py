@@ -2,12 +2,12 @@ from fastapi import APIRouter, Depends, HTTPException
 from typing import List
 from app.services.user_service import giant_function
 from app.schemas.user import UserOut, UserCreate, UserUpdate
-from app.core.auth import verify_basic_auth
+from app.core.auth import verify_bearer_token
 
 router = APIRouter()
 
 @router.get("/{user_id}", response_model=UserOut)
-def get_user(user_id: int, auth=Depends(verify_basic_auth)):
+def get_user(user_id: int, auth=Depends(verify_bearer_token)):
     """
     Reto: adapta este endpoint considerando buenas prácticas de trazabilidad
     """
@@ -17,22 +17,22 @@ def get_user(user_id: int, auth=Depends(verify_basic_auth)):
     return result
 
 @router.post("/", response_model=UserOut)
-def create_user(user_create: UserCreate, auth=Depends(verify_basic_auth)):
+def create_user(user_create: UserCreate, auth=Depends(verify_bearer_token)):
     result = giant_function(action="create", user_create=user_create)
-    if "error" in result:
+    if result and "error" in result:
         raise HTTPException(status_code=400, detail=result["error"])
     return result
 
 @router.put("/", response_model=UserOut)
-def update_user(user_id: int, user_update: UserUpdate, auth=Depends(verify_basic_auth)):
+def update_user(user_id: int, user_update: UserUpdate, auth=Depends(verify_bearer_token)):
     result = giant_function(action="update", user_id=user_id, user_update=user_update)
-    if "error" in result:
+    if result and "error" in result:
         raise HTTPException(status_code=400, detail=result["error"])
     return result
 
 @router.delete("/")
-def delete_user(user_id: int, auth=Depends(verify_basic_auth)):
+def delete_user(user_id: int, auth=Depends(verify_bearer_token)):
     result = giant_function(action="delete", user_id=user_id)
-    if "error" in result:
+    if result and "error" in result::
         raise HTTPException(status_code=400, detail=result["error"])
     return result
