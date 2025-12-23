@@ -1,6 +1,8 @@
 from app.models.user import User
 from app.schemas.user import UserCreate, UserUpdate, UserOut
 from app.core.database import SessionLocal
+from sqlalchemy.exc import IntegrityError
+
 
 def giant_function(action, user_id=None, user_create: UserCreate = None, user_update: UserUpdate = None):
     """
@@ -14,9 +16,13 @@ def giant_function(action, user_id=None, user_create: UserCreate = None, user_up
             return {"error": "Datos de usuario requeridos"}
         new_user = User(email=user_create.email, name=user_create.name)
         db.add(new_user)
-        db.commit()
-        db.refresh(new_user)
-        result = UserOut.model_validate(new_user)
+        try:
+            db.commit()
+            db.refresh(new_user)
+            result = UserOut.model_validate(new_user)
+        except IntegrityError:
+            db.rollback()
+            return {"error": "El email ya está registrado"}
 
     elif action == "get":
         if not user_id:
