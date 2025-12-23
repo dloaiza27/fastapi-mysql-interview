@@ -21,7 +21,7 @@ app.add_middleware(
 
 app.include_router(
     health.router, 
-    prefix="/api/health", 
+    prefix="/api", 
     tags=["Salud y Estatus"]
 )
 
